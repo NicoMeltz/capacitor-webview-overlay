@@ -27,6 +27,11 @@ class WebviewOverlay: UIViewController, WKUIDelegate, WKNavigationDelegate {
         self.plugin = plugin
         self.configuration = configuration
     }
+
+    deinit {
+        self.clearDecisionHandler()        
+        self.webview?.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
+    }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -296,7 +301,7 @@ public class WebviewOverlayPlugin: CAPPlugin {
             self.height = CGFloat(call.getFloat("height") ?? 0)
             self.x = CGFloat(call.getFloat("x") ?? 0)
             self.y = CGFloat(call.getFloat("y") ?? 0)
-            
+            return;
             if (!self.fullscreen) {
                 let rect = CGRect(x: self.x, y: self.y, width: self.width, height: self.height)
                 self.webviewOverlay.view.frame = rect
