@@ -147,7 +147,7 @@ export class WebviewOverlay {
         sameHost: boolean,
         complete: (allow: boolean) => void
     }) => void) {
-        this.navigationHandlerEvent = WebviewOverlayPlugin.addListener('navigationHandler', (event) => {
+        this.navigationHandlerEvent = WebviewOverlayPlugin.addListener('navigationHandler', (event: any) => {
             const complete = (allow: boolean) => {
                 WebviewOverlayPlugin.handleNavigationEvent({allow});
             }

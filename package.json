@@ -1,6 +1,6 @@
 {
     "name": "@teamhive/capacitor-webview-overlay",
-    "version": "1.6.0",
+    "version": "1.6.7",
     "description": "Webview Overlay",
     "main": "dist/esm/index.js",
     "types": "dist/esm/index.d.ts",
@@ -13,11 +13,13 @@
     "author": "TeamHive",
     "license": "MIT",
     "dependencies": {
-        "@capacitor/core": "latest",
         "resize-observer-polyfill": "^1.5.1"
     },
     "devDependencies": {
-        "typescript": "^2.6.2"
+        "@capacitor/android": "^2.4.2",
+        "@capacitor/core": "^2.4.2",
+        "@capacitor/ios": "^2.4.2",
+        "typescript": "~3.8.3"
     },
     "files": [
         "dist/",

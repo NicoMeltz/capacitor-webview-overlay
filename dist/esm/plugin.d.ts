@@ -41,5 +41,5 @@ export declare class WebviewOverlay {
     goBack(): void;
     goForward(): void;
     reload(): void;
-    loadUrl(url: string): Promise<void>;
+    loadUrl(url: string): any;
 }
