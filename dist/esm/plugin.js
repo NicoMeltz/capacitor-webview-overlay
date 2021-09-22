@@ -61,7 +61,6 @@ export class WebviewOverlay {
         if (this.navigationHandlerEvent) {
             this.navigationHandlerEvent.remove();
         }
-        console.log('##close');
         return WebviewOverlayPlugin.close();
     }
     toggleSnapshot(snapshotVisible) {

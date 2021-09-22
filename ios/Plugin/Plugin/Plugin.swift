@@ -263,6 +263,7 @@ public class WebviewOverlayPlugin: CAPPlugin {
                 self.webviewOverlay = nil
                 self.hidden = false
             }
+            call.success();
         }
     }
     
@@ -301,7 +302,12 @@ public class WebviewOverlayPlugin: CAPPlugin {
             self.height = CGFloat(call.getFloat("height") ?? 0)
             self.x = CGFloat(call.getFloat("x") ?? 0)
             self.y = CGFloat(call.getFloat("y") ?? 0)
-            return;
+
+            if( self.webviewOverlay == nil || self.webviewOverlay.view == nil || self.webviewOverlay.topSafeArea == nil) {
+                call.success()
+                return;
+            }
+
             if (!self.fullscreen) {
                 let rect = CGRect(x: self.x, y: self.y, width: self.width, height: self.height)
                 self.webviewOverlay.view.frame = rect
