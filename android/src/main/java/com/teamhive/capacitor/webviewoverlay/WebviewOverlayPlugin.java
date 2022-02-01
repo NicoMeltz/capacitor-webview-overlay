@@ -1,9 +1,11 @@
 package com.teamhive.capacitor.webviewoverlay;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Message;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.view.View;
@@ -139,6 +141,19 @@ public class WebviewOverlayPlugin extends Plugin {
                         targetWebView.setWebViewClient(new WebViewClient() {
                             @Override
                             public void onLoadResource(WebView view, String url) {
+                              Intent intent;
+
+                              if (url.contains("chainbow")) {
+                                intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse(url));
+                                view.getContext().startActivity(intent);
+
+                                hidden = true;
+                                if (webView != null) {
+                                  webView.setVisibility(View.INVISIBLE);
+                                }
+                                return;
+                              }
                                 if (hasListeners("navigationHandler")) {
                                     handleNavigation(url, true);
                                     JSObject progressValue = new JSObject();
@@ -193,8 +208,16 @@ public class WebviewOverlayPlugin extends Plugin {
                     }
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                      Intent intent;
 
-                        if (hasListeners("navigationHandler")) {
+                      if (url.contains("chainbow")) {
+                        intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(url));
+                        view.getContext().startActivity(intent);
+
+                        return true;
+                      }
+                      if (hasListeners("navigationHandler")) {
                             handleNavigation(url, false);
                             return true;
                         }
@@ -510,3 +533,6 @@ public class WebviewOverlayPlugin extends Plugin {
         });
     }
 }
+
+
+

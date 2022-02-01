@@ -1,56 +1,38 @@
-import { PluginListenerHandle, registerPlugin } from '@capacitor/core';
-import { IWebviewOverlayPlugin, ScriptInjectionTime } from './definitions';
+'use strict';
 
-import ResizeObserver from 'resize-observer-polyfill';
+Object.defineProperty(exports, '__esModule', { value: true });
 
-const WebviewOverlayPlugin = registerPlugin<IWebviewOverlayPlugin>('WebviewOverlayPlugin');
+var core = require('@capacitor/core');
+var ResizeObserver = require('resize-observer-polyfill');
 
-export interface WebviewOverlayOpenOptions {
-    /**
-     * The URL to open the webview to
-     */
-    url: string;
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-    script?: {
-        javascript: string;
-        injectionTime?: ScriptInjectionTime;
-    }
+var ResizeObserver__default = /*#__PURE__*/_interopDefaultLegacy(ResizeObserver);
 
-    /**
-     * The element to open the webview in place of. The webview will open with the same dimensions and fixed position on screen.
-     * When toggled off, the element will have a background image with the webview snapshot.
-     */
-    element: HTMLElement;
-}
+exports.ScriptInjectionTime = void 0;
+(function (ScriptInjectionTime) {
+    ScriptInjectionTime[ScriptInjectionTime["atDocumentStart"] = 0] = "atDocumentStart";
+    ScriptInjectionTime[ScriptInjectionTime["atDocumentEnd"] = 1] = "atDocumentEnd";
+})(exports.ScriptInjectionTime || (exports.ScriptInjectionTime = {}));
 
+const WebviewOverlayPlugin = core.registerPlugin('WebviewOverlayPlugin');
 class WebviewOverlayClass {
-
-    element: HTMLElement;
-    updateSnapshotEvent: PluginListenerHandle;
-    pageLoadedEvent: PluginListenerHandle;
-    progressEvent: PluginListenerHandle;
-    navigationHandlerEvent: PluginListenerHandle;
-    resizeObserver: ResizeObserver;
-
-    open(options: WebviewOverlayOpenOptions): Promise<void> {
+    open(options) {
         this.element = options.element;
-
         if (this.element && this.element.style) {
             this.element.style.backgroundSize = 'cover';
             this.element.style.backgroundRepeat = 'no-repeat';
             this.element.style.backgroundPosition = 'center';
         }
-        const boundingBox = this.element.getBoundingClientRect() as DOMRect;
-
+        const boundingBox = this.element.getBoundingClientRect();
         this.updateSnapshotEvent = WebviewOverlayPlugin.addListener('updateSnapshot', () => {
             setTimeout(() => {
                 this.toggleSnapshot(true);
-            }, 100)
+            }, 100);
         });
-
-        this.resizeObserver = new ResizeObserver((entries) => {
+        this.resizeObserver = new ResizeObserver__default['default']((entries) => {
             for (const _entry of entries) {
-                const boundingBox = options.element.getBoundingClientRect() as DOMRect;
+                const boundingBox = options.element.getBoundingClientRect();
                 WebviewOverlayPlugin.updateDimensions({
                     width: Math.round(boundingBox.width),
                     height: Math.round(boundingBox.height),
@@ -60,19 +42,17 @@ class WebviewOverlayClass {
             }
         });
         this.resizeObserver.observe(this.element);
-
         return WebviewOverlayPlugin.open({
             url: options.url,
             javascript: options.script ? options.script.javascript : '',
-            injectionTime: options.script ? (options.script.injectionTime || ScriptInjectionTime.atDocumentStart) : ScriptInjectionTime.atDocumentStart,
+            injectionTime: options.script ? (options.script.injectionTime || exports.ScriptInjectionTime.atDocumentStart) : exports.ScriptInjectionTime.atDocumentStart,
             width: Math.round(boundingBox.width),
             height: Math.round(boundingBox.height),
             x: Math.round(boundingBox.x),
             y: Math.round(boundingBox.y)
         });
     }
-
-    close(): Promise<void> {
+    close() {
         this.element = undefined;
         this.resizeObserver.disconnect();
         if (this.updateSnapshotEvent) {
@@ -89,17 +69,14 @@ class WebviewOverlayClass {
         }
         return WebviewOverlayPlugin.close();
     }
-
-    show(): Promise<void> {
+    show() {
         return WebviewOverlayPlugin.show();
     }
-
-    hide(): Promise<void> {
+    hide() {
         return WebviewOverlayPlugin.hide();
     }
-
-    async toggleSnapshot(snapshotVisible: boolean): Promise<void> {
-        return new Promise<void>(async (resolve) => {
+    async toggleSnapshot(snapshotVisible) {
+        return new Promise(async (resolve) => {
             const snapshot = (await WebviewOverlayPlugin.getSnapshot()).src;
             if (snapshotVisible) {
                 if (snapshot) {
@@ -114,7 +91,7 @@ class WebviewOverlayClass {
                         setTimeout(async () => {
                             await WebviewOverlayPlugin.hide();
                             resolve();
-                        }, 25)
+                        }, 25);
                     };
                     img.src = blobUrl;
                 }
@@ -135,55 +112,42 @@ class WebviewOverlayClass {
             }
         });
     }
-
-    async evaluateJavaScript(javascript: string): Promise<string> {
+    async evaluateJavaScript(javascript) {
         return (await WebviewOverlayPlugin.evaluateJavaScript({
             javascript
         })).result;
     }
-
-    onPageLoaded(listenerFunc: () => void) {
+    onPageLoaded(listenerFunc) {
         this.pageLoadedEvent = WebviewOverlayPlugin.addListener('pageLoaded', listenerFunc);
     }
-
-    onProgress(listenerFunc: (progress: { value: number }) => void) {
+    onProgress(listenerFunc) {
         this.progressEvent = WebviewOverlayPlugin.addListener('progress', listenerFunc);
     }
-
-    handleNavigation(listenerFunc: (event: {
-        url: string,
-        newWindow: boolean,
-        sameHost: boolean,
-        complete: (allow: boolean) => void
-    }) => void) {
-        this.navigationHandlerEvent = WebviewOverlayPlugin.addListener('navigationHandler', (event: any) => {
-            const complete = (allow: boolean) => {
+    handleNavigation(listenerFunc) {
+        this.navigationHandlerEvent = WebviewOverlayPlugin.addListener('navigationHandler', (event) => {
+            const complete = (allow) => {
                 WebviewOverlayPlugin.handleNavigationEvent({ allow });
-            }
-            listenerFunc({ ...event, complete });
+            };
+            listenerFunc(Object.assign(Object.assign({}, event), { complete }));
         });
     }
-
     toggleFullscreen() {
         WebviewOverlayPlugin.toggleFullscreen();
     }
-
     goBack() {
         WebviewOverlayPlugin.goBack();
     }
-
     goForward() {
         WebviewOverlayPlugin.goForward();
     }
-
     reload() {
         WebviewOverlayPlugin.reload();
     }
-
-    loadUrl(url: string) {
+    loadUrl(url) {
         return WebviewOverlayPlugin.loadUrl({ url });
     }
-
 }
+const WebviewOverlay = new WebviewOverlayClass();
 
-export const WebviewOverlay = new WebviewOverlayClass();
+exports.WebviewOverlay = WebviewOverlay;
+//# sourceMappingURL=plugin.cjs.js.map
