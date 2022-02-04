@@ -147,11 +147,6 @@ public class WebviewOverlayPlugin extends Plugin {
                                 intent = new Intent(Intent.ACTION_VIEW);
                                 intent.setData(Uri.parse(url));
                                 view.getContext().startActivity(intent);
-
-                                hidden = true;
-                                if (webView != null) {
-                                  webView.setVisibility(View.INVISIBLE);
-                                }
                                 return;
                               }
                                 if (hasListeners("navigationHandler")) {
