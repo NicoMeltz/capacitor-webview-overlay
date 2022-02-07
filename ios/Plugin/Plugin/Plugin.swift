@@ -142,6 +142,20 @@ class WebviewOverlay: UIViewController, WKUIDelegate, WKNavigationDelegate {
         }
     }
 
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if let url = navigationAction.request.url, let scheme = url.scheme?.lowercased() {
+            //check the url scheme to bring user to specific apps other than safari
+            if scheme != "https" && scheme != "http" {
+                if UIApplication.shared.canOpenURL(url){
+                    UIApplication.shared.open(url)
+                    decisionHandler(.cancel)
+                    return
+                }
+            }
+        }
+        decisionHandler(.allow)
+    }
+
     public func clearWebServer() {
         if (self.webServer != nil) {
             if (self.webServer?.isRunning == true) {
