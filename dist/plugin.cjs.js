@@ -69,6 +69,9 @@ class WebviewOverlayClass {
         }
         return WebviewOverlayPlugin.close();
     }
+    addListener(eventName, listenerFunc) {
+        return WebviewOverlayPlugin.addListener(eventName, listenerFunc);
+    }
     show() {
         return WebviewOverlayPlugin.show();
     }

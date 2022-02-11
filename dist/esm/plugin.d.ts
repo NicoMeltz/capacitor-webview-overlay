@@ -25,6 +25,7 @@ declare class WebviewOverlayClass {
     resizeObserver: ResizeObserver;
     open(options: WebviewOverlayOpenOptions): Promise<void>;
     close(): Promise<void>;
+    addListener(eventName: 'pageLoaded' | 'updateSnapshot' | 'progress' | 'navigationHandler' | 'onMessage', listenerFunc: (...args: any[]) => void): PluginListenerHandle;
     show(): Promise<void>;
     hide(): Promise<void>;
     toggleSnapshot(snapshotVisible: boolean): Promise<void>;
