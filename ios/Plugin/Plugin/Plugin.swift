@@ -196,7 +196,7 @@ class WebviewOverlay: UIViewController, WKUIDelegate, WKNavigationDelegate {
 extension WebviewOverlayPlugin: WKScriptMessageHandler {
     public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         self.notifyListeners("onMessage", data: [
-            "message": message
+            "message": message.body
         ])
     }
 }
@@ -227,7 +227,6 @@ public class WebviewOverlayPlugin: CAPPlugin {
             webConfiguration.allowsInlineMediaPlayback = true
             webConfiguration.mediaTypesRequiringUserActionForPlayback = []
             webConfiguration.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
-            webConfiguration.userContentController.add(self as WKScriptMessageHandler, name: "postMessage")
             
             // Content controller
             let javascript = call.getString("javascript") ?? ""
@@ -248,6 +247,7 @@ public class WebviewOverlayPlugin: CAPPlugin {
                 let script = WKUserScript(source: String(javascript), injectionTime: injectionTime, forMainFrameOnly: true)
                 contentController.addUserScript(script)
                 webConfiguration.userContentController = contentController
+                webConfiguration.userContentController.add(self, name: "ChainBow")
             }
 
             self.webviewOverlay = WebviewOverlay(self, configuration: webConfiguration)
