@@ -194,7 +194,7 @@ class WebviewOverlay: UIViewController, WKUIDelegate, WKNavigationDelegate {
 }
 
 extension WebviewOverlayPlugin: WKScriptMessageHandler {
-    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+    public func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         self.notifyListeners("onMessage", data: [
             "message": message
         ])
