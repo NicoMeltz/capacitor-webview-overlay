@@ -193,6 +193,14 @@ class WebviewOverlay: UIViewController, WKUIDelegate, WKNavigationDelegate {
 
 }
 
+extension WebviewOverlayPlugin: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        self.notifyListeners("onMessage", data: [
+            "message": message
+        ])
+    }
+}
+
 @available(iOS 11.0, *)
 @objc(WebviewOverlayPlugin)
 public class WebviewOverlayPlugin: CAPPlugin {
@@ -219,7 +227,8 @@ public class WebviewOverlayPlugin: CAPPlugin {
             webConfiguration.allowsInlineMediaPlayback = true
             webConfiguration.mediaTypesRequiringUserActionForPlayback = []
             webConfiguration.preferences.setValue(true, forKey: "allowFileAccessFromFileURLs")
-
+            webConfiguration.userContentController.add(self as WKScriptMessageHandler, name: "postMessage")
+            
             // Content controller
             let javascript = call.getString("javascript") ?? ""
             if (javascript != "") {
