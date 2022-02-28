@@ -106,18 +106,6 @@ public class WebviewOverlayPlugin extends Plugin {
           public void run() {
             hidden = false;
             webView = new WebView(getContext());
-            webView.addJavascriptInterface(
-              new JSInterface() {
-                @Override
-                @JavascriptInterface
-                public void postMessage(@NonNull String jsonStr) {
-                  JSObject postData = new JSObject();
-                  postData.put("message", jsonStr);
-                  notifyListeners("onMessage", postData);
-                }
-              },
-              "ChainBow"
-            );
             WebSettings settings = webView.getSettings();
             settings.setAllowContentAccess(true);
             settings.setAllowFileAccess(true);
@@ -170,17 +158,6 @@ public class WebviewOverlayPlugin extends Plugin {
                       public void onLoadResource(WebView view, String url) {
                         Intent intent;
 
-                        if (url.contains("chainbow")) {
-                          intent = new Intent(Intent.ACTION_VIEW);
-                          intent.setData(Uri.parse(url));
-                          view.getContext().startActivity(intent);
-
-                          hidden = true;
-                          if (webView != null) {
-                            webView.setVisibility(View.INVISIBLE);
-                          }
-                          return;
-                        }
                         if (hasListeners("navigationHandler")) {
                           handleNavigation(url, true);
                           JSObject progressValue = new JSObject();
@@ -239,13 +216,6 @@ public class WebviewOverlayPlugin extends Plugin {
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
                   Intent intent;
 
-                  if (url.contains("chainbow")) {
-                    intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(url));
-                    view.getContext().startActivity(intent);
-
-                    return true;
-                  }
                   if (hasListeners("navigationHandler")) {
                     handleNavigation(url, false);
                     return true;

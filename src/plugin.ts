@@ -90,7 +90,7 @@ class WebviewOverlayClass {
         return WebviewOverlayPlugin.close();
     }
 
-    addListener(eventName: 'pageLoaded' | 'updateSnapshot' | 'progress' | 'navigationHandler' | 'onMessage', listenerFunc: (...args: any[]) => void): PluginListenerHandle {
+    addListener(eventName: 'pageLoaded' | 'updateSnapshot' | 'progress' | 'navigationHandler' , listenerFunc: (...args: any[]) => void): PluginListenerHandle {
         return WebviewOverlayPlugin.addListener(eventName, listenerFunc);
     }
 
